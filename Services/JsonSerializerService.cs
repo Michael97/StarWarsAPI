@@ -21,5 +21,10 @@ namespace StarWarsAPI.Services
         {
             return JsonSerializer.Deserialize<T>(json, _serializerOptions);
         }
+
+        public string Serialize<T>(T data) where T : class
+        {
+            return JsonSerializer.Serialize<T>(data, _serializerOptions);
+        }
     }
 }
