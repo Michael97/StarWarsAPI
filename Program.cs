@@ -31,17 +31,28 @@ foreach (var film in films.Results)
 
     foreach (var character in film.Characters)
     {
-        characterUrlCache.Add(character);
+        if (characterUrlCache.Add(character))
+        {
+            //Get the URL
+            var characterResponse = await apiService.GetAsync<Character>(character);
+            Console.WriteLine(characterResponse);
+
+
+
+            var serializedCharacter = jsonSerializerService.Serialize(characterResponse);
+            Console.WriteLine(serializedCharacter);
+            File.WriteAllText($"C:\\dev\\Tests\\StarWarsAPI\\Data\\Characters\\{characterResponse.Name}.json", serializedCharacter);
+        }
     }
 }
 
 //Now we want API call for each character
 
-foreach (var character in characterUrlCache)
+/*foreach (var character in characterUrlCache)
 {
     var characterResponse = await apiService.GetAsync<Character>(character);
     Console.WriteLine(characterResponse);
     var serializedCharacter = jsonSerializerService.Serialize(character);
     Console.WriteLine(serializedCharacter);
-    File.WriteAllText($"C:\\dev\\Tests\\StarWarsAPI\\Data\\Characters\\{characterResponse.Name}.json", serializedFilms);
-}
+    File.WriteAllText($"C:\\dev\\Tests\\StarWarsAPI\\Data\\Characters\\{characterResponse.Name}.json", serializedCharacter);
+}*/
