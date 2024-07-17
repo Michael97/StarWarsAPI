@@ -25,17 +25,24 @@ namespace StarWarsAPI.Services
             }
             catch (JsonException ex)
             {
-                throw new ArgumentException($"Failed to deserialize Json: {ex.Message}");
+                throw new ArgumentException($"Failed to deserialize Json: {ex.Message}", nameof(json));
             }
             catch (Exception ex)
             {
-                throw new ArgumentException($"Error to deserializing Json: {ex.Message}");
+                throw new Exception($"Unexpected error while deserializing Json: {ex.Message}");
             }
         }
 
         public string Serialize<T>(T data) where T : class
         {
-            return JsonSerializer.Serialize<T>(data, _serializerOptions);
+            try
+            {
+                return JsonSerializer.Serialize<T>(data, _serializerOptions);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Unexpected error while deserializing Json: {ex.Message}");
+            }
         }
     }
 }
