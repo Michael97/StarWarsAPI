@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace StarWarsAPI.Model
+﻿namespace StarWarsAPI.Model
 {
     public class FilmsResponse
     {
@@ -13,5 +7,4 @@ namespace StarWarsAPI.Model
         public string Previous { get; set; } = string.Empty;
         public List<Film> Results { get; set; } = new List<Film>();
     }
-
 }

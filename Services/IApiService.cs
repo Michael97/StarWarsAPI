@@ -4,6 +4,6 @@ namespace StarWarsAPI.Services
 {
     public interface IApiService
     {
-        Task<FilmsResponse> GetAsync<FilmsResponse>(string endpoint);
+        Task<T> GetAsync<T>(string endpoint) where T : class;
     }
 }
