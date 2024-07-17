@@ -1,10 +1,14 @@
-﻿using StarWarsAPI.Model;
+﻿using Microsoft.Extensions.Configuration;
+using StarWarsAPI.Model;
 using StarWarsAPI.Services;
+
 
 //Services
 var jsonSerializerService = new JsonSerializerService();
 var apiService = new ApiService(new HttpClient(), jsonSerializerService);
 var dataService = new DataService(jsonSerializerService);
+
+var dataPath = new ConfigurationBuilder().AddJsonFile("appsettings.json").Build().GetSection("Settings")["DataPath"];
 
 var films = await apiService.GetAsync<FilmsResponse>("https://swapi.dev/api/films");
 
@@ -15,7 +19,7 @@ var serializedFilms = jsonSerializerService.Serialize(films);
 
 Console.WriteLine(serializedFilms);
 
-await dataService.SaveAsync($"C:\\dev\\Tests\\StarWarsAPI\\Data\\films.json", films);
+await dataService.SaveAsync($"{dataPath}\\films.json", films);
 
 //Get Characters from each film
 
@@ -26,7 +30,7 @@ var characterUrlCache = new HashSet<string>();
 foreach (var film in films.Results)
 {
     // Serialise each Film
-    await dataService.SaveAsync($"C:\\dev\\Tests\\StarWarsAPI\\Data\\Films\\{film.Title}.json", film);
+    await dataService.SaveAsync($"{dataPath}\\Films\\{film.Title}.json", film);
 
     foreach (var character in film.Characters)
     {
@@ -36,7 +40,7 @@ foreach (var film in films.Results)
             var characterResponse = await apiService.GetAsync<Character>(character);
 
             // Serialise and save character data
-            await dataService.SaveAsync($"C:\\dev\\Tests\\StarWarsAPI\\Data\\Characters\\{characterResponse.Name}.json", characterResponse);
+            await dataService.SaveAsync($"{dataPath}\\Characters\\{characterResponse.Name}.json", characterResponse);
         }
     }
 }
