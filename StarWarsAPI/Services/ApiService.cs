@@ -1,4 +1,5 @@
 ﻿using System.Text.Json;
+using StarWarsAPI.Exceptions;
 
 namespace StarWarsAPI.Services
 {
@@ -15,13 +16,33 @@ namespace StarWarsAPI.Services
 
         public async Task<T> GetAsync<T>(string endpoint) where T : class
         {
-            var response = await _httpClient.GetAsync(endpoint);
+            try
+            {
+                if (string.IsNullOrEmpty(endpoint))
+                {
+                    throw new HttpApiServiceException($"{endpoint}");
+                }
 
-            response.EnsureSuccessStatusCode();
+                var response = await _httpClient.GetAsync(endpoint);
 
-            var json = await response.Content.ReadAsStringAsync();
+                response.EnsureSuccessStatusCode();
 
-            return _JsonSerializerService.Deserialize<T>(json);
+                var json = await response.Content.ReadAsStringAsync();
+
+                return _JsonSerializerService.Deserialize<T>(json);
+            }
+            catch (HttpApiServiceException ex)
+            {
+                throw new ArgumentException($"Endpoint was null: {ex.Message}");
+            }
+            catch (HttpRequestException ex)
+            {
+                throw new ArgumentException($"Endpoint :{endpoint} has the following error: {ex.Message}");
+            }
+            catch (Exception ex)
+            {
+                throw new ArgumentException(ex.Message);
+            }
         }
     }
 
