@@ -6,7 +6,6 @@ var jsonSerializerService = new JsonSerializerService();
 var apiService = new ApiService(new HttpClient(), jsonSerializerService);
 var dataService = new DataService(jsonSerializerService);
 
-
 var films = await apiService.GetAsync<FilmsResponse>("https://swapi.dev/api/films");
 
 Console.WriteLine($"Number of films: {films.Count}");
