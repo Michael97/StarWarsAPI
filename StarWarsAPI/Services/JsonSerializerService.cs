@@ -19,7 +19,18 @@ namespace StarWarsAPI.Services
 
         public T Deserialize<T>(string json) where T : class
         {
-            return JsonSerializer.Deserialize<T>(json, _serializerOptions);
+            try
+            {
+                return JsonSerializer.Deserialize<T>(json, _serializerOptions);
+            }
+            catch (JsonException ex)
+            {
+                throw new ArgumentException($"Failed to deserialize Json: {ex.Message}");
+            }
+            catch (Exception ex)
+            {
+                throw new ArgumentException($"Error to deserializing Json: {ex.Message}");
+            }
         }
 
         public string Serialize<T>(T data) where T : class
