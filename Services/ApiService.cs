@@ -5,19 +5,23 @@ namespace StarWarsAPI.Services
     public class ApiService : IApiService
     {
         private readonly HttpClient _httpClient;
+        private readonly IJsonSerializerService _JsonSerializerService;
 
-        public ApiService(HttpClient httpClient)
+        public ApiService(HttpClient httpclient, IJsonSerializerService jsonSerializerService)
         {
-            _httpClient = httpClient;
+            _httpClient = httpclient;
+            _JsonSerializerService = jsonSerializerService;
         }
 
-        public async Task<string> GetAsync<T>(string endpoint) where T : class
+        public async Task<T> GetAsync<T>(string endpoint) where T : class
         {
             var response = await _httpClient.GetAsync(endpoint);
 
             response.EnsureSuccessStatusCode();
 
-            return await response.Content.ReadAsStringAsync();
+            var json = await response.Content.ReadAsStringAsync();
+
+            return _JsonSerializerService.Deserialize<T>(json);
         }
     }
 

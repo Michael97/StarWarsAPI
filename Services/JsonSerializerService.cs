@@ -12,9 +12,9 @@ namespace StarWarsAPI.Services
     {
         private readonly JsonSerializerOptions _serializerOptions;
 
-        public JsonSerializerService(JsonSerializerOptions serializerOptions)
+        public JsonSerializerService()
         {
-            _serializerOptions = serializerOptions;
+            _serializerOptions = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
         }
 
         public T Deserialize<T>(string json) where T : class
