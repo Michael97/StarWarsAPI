@@ -17,8 +17,27 @@ namespace StarWarsAPI.Services
 
         public async Task SaveAsync<T>(string filePath, T data) where T : class
         {
-            var json = _jsonSerializerService.Serialize(data);
-            await File.WriteAllTextAsync(filePath, json);
+            try
+            {
+                if (filePath == null)
+                {
+                    throw new Exception($"filepath is null: {filePath}");
+                }
+
+                var json = _jsonSerializerService.Serialize(data);
+
+                if (json == null)
+                {
+                    throw new Exception($"Json is null: {json}");
+                }
+
+                await File.WriteAllTextAsync(filePath, json);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error writing file: {ex.Message}");
+                throw;
+            }
         }
     }
 }
