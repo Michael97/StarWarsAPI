@@ -8,13 +8,6 @@ using Microsoft.Extensions.Logging;
 
 try
 {
-
-    //Services
-    var jsonSerializerService = new JsonSerializerService();
-    var apiService = new ApiService(new HttpClient(), jsonSerializerService);
-    var dataService = new DataService(jsonSerializerService);
-
-
     //Configuration File (Contains the data/save path)
     var appSettings = new ConfigurationBuilder().AddJsonFile("appsettings.json").Build();
     var dataPath = appSettings.GetSection("Settings")["DataPath"];
@@ -33,6 +26,12 @@ try
     LogManager.Configuration = config;
 
     var logger = LoggerFactory.Create(builder => builder.AddNLog()).CreateLogger<Program>();
+
+    //Services
+    var jsonSerializerService = new JsonSerializerService();
+    var apiService = new ApiService(new HttpClient(), jsonSerializerService);
+    var dataService = new DataService(jsonSerializerService);
+
 
    // var logger = LogManager.GetCurrentClassLogger();
 
@@ -71,10 +70,12 @@ try
             }
         }
     }
-    Console.WriteLine("Successfully added all data to file");
+    logger.LogInformation("Successfully added all data to file");
+    LogManager.Shutdown();
 }
 catch (Exception ex)
 {
     Console.WriteLine(ex.ToString());
+    LogManager.Shutdown();
     throw;
 }
