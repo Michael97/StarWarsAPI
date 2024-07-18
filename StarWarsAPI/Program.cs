@@ -53,6 +53,8 @@ try
     Directory.CreateDirectory($"{dataPath}\\Films");
     Directory.CreateDirectory($"{dataPath}\\Characters");
 
+    Random random = new Random();
+
     foreach (var film in films.Results)
     {
         // Serialise each Film
@@ -67,6 +69,9 @@ try
 
                 // Serialise and save character data
                 await dataService.SaveAsync($"{dataPath}\\Characters\\{characterResponse.Name}.json", characterResponse);
+
+                // Random delay to stop spamming and getting banned
+                await Task.Delay(random.Next(50, 200));
             }
         }
     }
