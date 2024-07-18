@@ -1,4 +1,5 @@
 ﻿using System.Text.Json;
+using Microsoft.Extensions.Logging;
 using StarWarsAPI.Exceptions;
 
 namespace StarWarsAPI.Services
@@ -7,11 +8,13 @@ namespace StarWarsAPI.Services
     {
         private readonly HttpClient _httpClient;
         private readonly IJsonSerializerService _JsonSerializerService;
+        private readonly ILogger<ApiService> _logger;
 
-        public ApiService(HttpClient httpclient, IJsonSerializerService jsonSerializerService)
+        public ApiService(HttpClient httpclient, IJsonSerializerService jsonSerializerService, ILogger<ApiService> logger)
         {
             _httpClient = httpclient;
             _JsonSerializerService = jsonSerializerService;
+            _logger = logger;
         }
 
         public async Task<T> GetAsync<T>(string endpoint) where T : class
