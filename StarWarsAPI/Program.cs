@@ -8,6 +8,7 @@ var jsonSerializerService = new JsonSerializerService();
 var apiService = new ApiService(new HttpClient(), jsonSerializerService);
 var dataService = new DataService(jsonSerializerService);
 
+//Configuration File (Contains the data/save path)
 var dataPath = new ConfigurationBuilder().AddJsonFile("appsettings.json").Build().GetSection("Settings")["DataPath"];
 
 var films = await apiService.GetAsync<FilmsResponse>("https://swapi.dev/api/films");
@@ -26,6 +27,9 @@ await dataService.SaveAsync($"{dataPath}\\films.json", films);
 // API request for each character -> cache results so don't do duplicate calls
 
 var characterUrlCache = new HashSet<string>();
+
+Directory.CreateDirectory($"{dataPath}\\Films");
+Directory.CreateDirectory($"{dataPath}\\Characters");
 
 foreach (var film in films.Results)
 {
