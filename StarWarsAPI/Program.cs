@@ -19,7 +19,7 @@ try
 
     // Set the log directory to the current directory
     config.Variables["logDirectory"] = logsPath;
-
+    Console.WriteLine(config.Variables["logDirectory"]);
     Directory.CreateDirectory(logsPath);
 
     // Apply configuration
