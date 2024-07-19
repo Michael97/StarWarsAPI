@@ -1,4 +1,6 @@
-﻿using System.Text.Json;
+﻿using System;
+using System.Text.Json;
+using NLog;
 using StarWarsAPI.Exceptions;
 
 namespace StarWarsAPI.Services
@@ -7,6 +9,7 @@ namespace StarWarsAPI.Services
     {
         private readonly HttpClient _httpClient;
         private readonly IJsonSerializerService _JsonSerializerService;
+        private static readonly ILogger _logger = LogManager.GetCurrentClassLogger();
 
         public ApiService(HttpClient httpclient, IJsonSerializerService jsonSerializerService)
         {
@@ -23,6 +26,8 @@ namespace StarWarsAPI.Services
                     throw new HttpApiServiceException($"{endpoint}");
                 }
 
+                _logger.Info($"Fetching data from {endpoint}");
+
                 var response = await _httpClient.GetAsync(endpoint);
 
                 response.EnsureSuccessStatusCode();
@@ -33,14 +38,19 @@ namespace StarWarsAPI.Services
             }
             catch (HttpApiServiceException ex)
             {
-                throw new ArgumentException($"Endpoint was null: {ex.Message}");
+                var response = $"Endpoint was null: {ex.Message}";
+                _logger.Info(response);
+                throw new ArgumentException(response);
             }
             catch (HttpRequestException ex)
             {
-                throw new ArgumentException($"Endpoint :{endpoint} has the following error: {ex.Message}");
+                var response = $"Endpoint :{endpoint} has the following error: {ex.Message}";
+                _logger.Info(response);
+                throw new ArgumentException(response);
             }
             catch (Exception ex)
             {
+                _logger.Info(ex.Message);
                 throw new ArgumentException(ex.Message);
             }
         }
